@@ -40,12 +40,18 @@ const portfolioItems = [
 export default function HomePage() {
   const [showPortfolio, setShowPortfolio] = useState(false)
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [prevSlide, setPrevSlide] = useState(0)
+  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right')
 
-  const nextSlide = () => {
+  const goNextSlide = () => {
+    setPrevSlide(currentSlide)
+    setSlideDirection('right')
     setCurrentSlide((prev) => (prev + 1) % portfolioItems.length)
   }
 
-  const prevSlide = () => {
+  const goPrevSlide = () => {
+    setPrevSlide(currentSlide)
+    setSlideDirection('left')
     setCurrentSlide((prev) => (prev - 1 + portfolioItems.length) % portfolioItems.length)
   }
 
@@ -104,85 +110,87 @@ export default function HomePage() {
 
       {/* Portfolio Modal Overlay */}
       {showPortfolio && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          {/* Backdrop with blur */}
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-md" onClick={() => setShowPortfolio(false)} />
-
-          {/* Portfolio Content */}
-          <div className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden animate-in fade-in zoom-in duration-300">
-            {/* Close Button */}
-            <button
-              onClick={() => setShowPortfolio(false)}
-              className="absolute top-4 right-4 z-10 bg-black/20 hover:bg-black/40 rounded-full p-2 transition-colors"
+        <div className="fixed inset-0 z-50">
+          {/* Backdrop: 블러 + 반투명 */}
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-lg" onClick={() => setShowPortfolio(false)} />
+          {/* 오버레이 컨텐츠 */}
+          <div className="absolute inset-0 flex items-center justify-center" onClick={() => setShowPortfolio(false)}>
+            {/* Main Portfolio Layout */}
+            <div
+              className="flex relative max-w-[70vw] max-h-[70vh] w-full h-full rounded-2xl shadow-2xl overflow-hidden bg-white"
+              style={{ zIndex: 1 }}
+              onClick={e => e.stopPropagation()}
+              onWheel={(e) => {
+                if (e.deltaY > 0) goNextSlide();
+                else if (e.deltaY < 0) goPrevSlide();
+              }}
             >
-              <X className="w-6 h-6 text-white" />
-            </button>
-
-            {/* Portfolio Header */}
-            <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white p-6">
-              <h2 className="text-3xl font-bold mb-2">포트폴리오</h2>
-              <p className="text-orange-100">토끼털을 태웠다의 창작물들</p>
-            </div>
-
-            {/* Portfolio Slider */}
-            <div className="relative">
-              <div className="overflow-hidden">
-                <div
-                  className="flex transition-transform duration-500 ease-in-out"
-                  style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-                >
-                  {portfolioItems.map((item) => (
-                    <div key={item.id} className="w-full flex-shrink-0">
-                      <div className="p-8">
-                        <div className="grid md:grid-cols-2 gap-8 items-center">
-                          <div>
-                            <Image
-                              src={item.image || "/placeholder.svg"}
-                              alt={item.title}
-                              width={800}
-                              height={600}
-                              className="rounded-lg shadow-lg w-full h-auto"
-                            />
-                          </div>
-                          <div>
-                            <span className="inline-block bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-medium mb-4">
-                              {item.category}
-                            </span>
-                            <h3 className="text-2xl font-bold text-gray-800 mb-4">{item.title}</h3>
-                            <p className="text-gray-600 leading-relaxed">{item.description}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+              {/* Left: Info/Thumbnail */}
+              <div className="flex flex-col justify-between w-1/3 p-12 bg-[#ece9e2] bg-opacity-95">
+                <div>
+                  <div className="text-xs text-gray-500 mb-2">{portfolioItems[currentSlide].category}</div>
+                  <div className="text-2xl font-bold mb-4">{portfolioItems[currentSlide].title}</div>
+                  <div className="text-gray-700 text-base mb-8 max-w-xs leading-relaxed">
+                    {portfolioItems[currentSlide].description}
+                  </div>
+                </div>
+                <div className="w-32 h-32 rounded-lg overflow-hidden border border-gray-300">
+                  <Image
+                    src={portfolioItems[currentSlide].image || "/placeholder.svg"}
+                    alt={portfolioItems[currentSlide].title}
+                    width={128}
+                    height={128}
+                    className="object-cover w-full h-full"
+                  />
                 </div>
               </div>
-
-              {/* Navigation Arrows */}
-              <button
-                onClick={prevSlide}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-3 shadow-lg transition-all"
-              >
-                <ChevronLeft className="w-6 h-6 text-gray-800" />
-              </button>
-              <button
-                onClick={nextSlide}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-3 shadow-lg transition-all"
-              >
-                <ChevronRight className="w-6 h-6 text-gray-800" />
-              </button>
-
-              {/* Slide Indicators */}
-              <div className="flex justify-center space-x-2 pb-6">
-                {portfolioItems.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-colors ${
-                      index === currentSlide ? "bg-orange-500" : "bg-gray-300"
-                    }`}
-                  />
-                ))}
+              {/* Center: Main Image with 애니메이션 */}
+              <div className="flex-1 flex items-center justify-center relative overflow-hidden">
+                <div className="absolute top-8 left-1/2 -translate-x-1/2 w-16 h-16 bg-red-500 rounded-full border-4 border-[#ece9e2] z-10" />
+                {/* 슬라이드 애니메이션 */}
+                <div className="w-full h-full relative" style={{ minHeight: 400 }}>
+                  {/* 이전 슬라이드 (애니메이션용) */}
+                  {prevSlide !== currentSlide && (
+                    <div
+                      key={prevSlide + '-prev'}
+                      className={`absolute top-0 left-0 w-full h-full transition-all duration-500 ease-in-out z-10
+                        ${slideDirection === 'right' ? '-translate-x-0 opacity-100' : 'translate-x-0 opacity-100'}
+                        ${slideDirection === 'right' ? '-translate-x-0' : ''}
+                        ${slideDirection === 'right' ? '-translate-x-0' : ''}
+                        ${slideDirection === 'right' ? '-translate-x-0' : ''}
+                        ${slideDirection === 'right' ? '-translate-x-0' : ''}
+                        ${slideDirection === 'right' ? '-translate-x-0' : ''}
+                        ${slideDirection === 'right' ? 'animate-slideOutLeft' : 'animate-slideOutRight'}`}
+                      style={{ pointerEvents: 'none' }}
+                    >
+                      <Image
+                        src={portfolioItems[prevSlide].image || "/placeholder.svg"}
+                        alt={portfolioItems[prevSlide].title}
+                        width={400}
+                        height={600}
+                        className="rounded-lg shadow-xl object-cover max-h-[70vh]"
+                      />
+                    </div>
+                  )}
+                  {/* 현재 슬라이드 */}
+                  <div
+                    key={currentSlide + '-current'}
+                    className={`absolute top-0 left-0 w-full h-full transition-all duration-500 ease-in-out z-20
+                      ${slideDirection === 'right' ? 'animate-slideInRight' : 'animate-slideInLeft'}`}
+                  >
+                    <Image
+                      src={portfolioItems[currentSlide].image || "/placeholder.svg"}
+                      alt={portfolioItems[currentSlide].title}
+                      width={400}
+                      height={600}
+                      className="rounded-lg shadow-xl object-cover max-h-[70vh]"
+                    />
+                  </div>
+                </div>
+              </div>
+              {/* Right: Vertical 'portfolio' */}
+              <div className="flex flex-col justify-center items-center w-24 bg-[#ece9e2] bg-opacity-95">
+                <span className="text-[48px] font-extrabold text-red-600 tracking-tight rotate-90 select-none" style={{letterSpacing: '-2px'}}>portfolio</span>
               </div>
             </div>
           </div>
