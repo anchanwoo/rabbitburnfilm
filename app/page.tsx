@@ -86,13 +86,13 @@ export default function HomePage() {
       <footer className="p-8 text-center text-white">
         {/* Social Links */}
         <div className="flex justify-center space-x-8 mb-6">
-          <Link href="#" className="text-white hover:text-orange-200 transition-colors">
+          <Link href="https://youtube.com/@rabbit_burn-ppq?si=V8LRItnxJ1awY0e0" className="text-white hover:text-orange-200 transition-colors" target="_blank" rel="noopener noreferrer">
             <Youtube className="w-10 h-10" />
           </Link>
-          <Link href="#" className="text-white hover:text-orange-200 transition-colors">
+          <Link href="https://www.instagram.com/rabb.itburn/" className="text-white hover:text-orange-200 transition-colors" target="_blank" rel="noopener noreferrer">
             <Instagram className="w-10 h-10" />
           </Link>
-          <Link href="mailto:hello@creativecrew.com" className="text-white hover:text-orange-200 transition-colors">
+          <Link href="mailto:honglogchan@gmail.com" className="text-white hover:text-orange-200 transition-colors">
             <Mail className="w-10 h-10" />
           </Link>
         </div>
@@ -115,82 +115,44 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-black/40 backdrop-blur-lg" onClick={() => setShowPortfolio(false)} />
           {/* 오버레이 컨텐츠 */}
           <div className="absolute inset-0 flex items-center justify-center" onClick={() => setShowPortfolio(false)}>
-            {/* Main Portfolio Layout */}
             <div
-              className="flex relative max-w-[70vw] max-h-[70vh] w-full h-full rounded-2xl shadow-2xl overflow-hidden bg-white"
+              className="flex relative max-w-[70vw] max-h-[70vh] w-full h-full rounded-2xl shadow-2xl overflow-hidden bg-white items-center justify-center"
               style={{ zIndex: 1 }}
               onClick={e => e.stopPropagation()}
-              onWheel={(e) => {
-                if (e.deltaY > 0) goNextSlide();
-                else if (e.deltaY < 0) goPrevSlide();
-              }}
             >
-              {/* Left: Info/Thumbnail */}
-              <div className="flex flex-col justify-between w-1/3 p-12 bg-[#ece9e2] bg-opacity-95">
-                <div>
-                  <div className="text-xs text-gray-500 mb-2">{portfolioItems[currentSlide].category}</div>
-                  <div className="text-2xl font-bold mb-4">{portfolioItems[currentSlide].title}</div>
-                  <div className="text-gray-700 text-base mb-8 max-w-xs leading-relaxed">
-                    {portfolioItems[currentSlide].description}
-                  </div>
-                </div>
-                <div className="w-32 h-32 rounded-lg overflow-hidden border border-gray-300">
-                  <Image
-                    src={portfolioItems[currentSlide].image || "/placeholder.svg"}
-                    alt={portfolioItems[currentSlide].title}
-                    width={128}
-                    height={128}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-              </div>
-              {/* Center: Main Image with 애니메이션 */}
-              <div className="flex-1 flex items-center justify-center relative overflow-hidden">
-                <div className="absolute top-8 left-1/2 -translate-x-1/2 w-16 h-16 bg-red-500 rounded-full border-4 border-[#ece9e2] z-10" />
-                {/* 슬라이드 애니메이션 */}
-                <div className="w-full h-full relative" style={{ minHeight: 400 }}>
-                  {/* 이전 슬라이드 (애니메이션용) */}
-                  {prevSlide !== currentSlide && (
-                    <div
-                      key={prevSlide + '-prev'}
-                      className={`absolute top-0 left-0 w-full h-full transition-all duration-500 ease-in-out z-10
-                        ${slideDirection === 'right' ? '-translate-x-0 opacity-100' : 'translate-x-0 opacity-100'}
-                        ${slideDirection === 'right' ? '-translate-x-0' : ''}
-                        ${slideDirection === 'right' ? '-translate-x-0' : ''}
-                        ${slideDirection === 'right' ? '-translate-x-0' : ''}
-                        ${slideDirection === 'right' ? '-translate-x-0' : ''}
-                        ${slideDirection === 'right' ? '-translate-x-0' : ''}
-                        ${slideDirection === 'right' ? 'animate-slideOutLeft' : 'animate-slideOutRight'}`}
-                      style={{ pointerEvents: 'none' }}
-                    >
-                      <Image
-                        src={portfolioItems[prevSlide].image || "/placeholder.svg"}
-                        alt={portfolioItems[prevSlide].title}
-                        width={400}
-                        height={600}
-                        className="rounded-lg shadow-xl object-cover max-h-[70vh]"
-                      />
-                    </div>
-                  )}
-                  {/* 현재 슬라이드 */}
-                  <div
-                    key={currentSlide + '-current'}
-                    className={`absolute top-0 left-0 w-full h-full transition-all duration-500 ease-in-out z-20
-                      ${slideDirection === 'right' ? 'animate-slideInRight' : 'animate-slideInLeft'}`}
-                  >
-                    <Image
-                      src={portfolioItems[currentSlide].image || "/placeholder.svg"}
-                      alt={portfolioItems[currentSlide].title}
-                      width={400}
-                      height={600}
-                      className="rounded-lg shadow-xl object-cover max-h-[70vh]"
-                    />
-                  </div>
-                </div>
-              </div>
-              {/* Right: Vertical 'portfolio' */}
-              <div className="flex flex-col justify-center items-center w-24 bg-[#ece9e2] bg-opacity-95">
-                <span className="text-[48px] font-extrabold text-red-600 tracking-tight rotate-90 select-none" style={{letterSpacing: '-2px'}}>portfolio</span>
+              {/* Canva embed */}
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  height: 0,
+                  paddingTop: "56.25%",
+                  paddingBottom: 0,
+                  boxShadow: "0 2px 8px 0 rgba(63,69,81,0.16)",
+                  marginTop: "1.6em",
+                  marginBottom: "0.9em",
+                  overflow: "hidden",
+                  borderRadius: "8px",
+                  willChange: "transform"
+                }}
+              >
+                <iframe
+                  loading="lazy"
+                  style={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    top: 0,
+                    left: 0,
+                    border: "none",
+                    padding: 0,
+                    margin: 0
+                  }}
+                  src="https://www.canva.com/design/DAGs2ceUT4o/YbwaPv9eKMmuNdRLrgm9bA/view?embed"
+                  allowFullScreen
+                  allow="fullscreen"
+                  title="Canva Portfolio"
+                />
               </div>
             </div>
           </div>
